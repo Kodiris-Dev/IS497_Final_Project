@@ -1,1 +1,1 @@
-web: gunicorn --pythonpath is497.wsgi
+web: gunicorn is497.wsgi --log-file -
