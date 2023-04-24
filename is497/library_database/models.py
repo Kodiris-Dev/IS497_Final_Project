@@ -37,9 +37,9 @@ class Profile(models.Model):
     address = models.CharField(max_length=50, default="")
     zip = models.IntegerField()
     contact_number = models.CharField(max_length=20)
-    genre_id = models.ForeignKey(Genre, related_name='profiles', on_delete=models.PROTECT)
-    language_id = models.ForeignKey(Language, related_name='profiles', on_delete=models.PROTECT)
-    membership_id = models.ForeignKey(Membership, related_name='profiles', on_delete=models.PROTECT)
+    preferred_genre = models.ForeignKey(Genre, related_name='profiles', on_delete=models.PROTECT)
+    preferred_language = models.ForeignKey(Language, related_name='profiles', on_delete=models.PROTECT)
+    membership_type = models.ForeignKey(Membership, related_name='profiles', on_delete=models.PROTECT)
     assistance = models.BooleanField()
 
     def __str__(self):
@@ -52,11 +52,11 @@ class Book(models.Model):
     author = models.CharField(max_length=50)
     isbn = models.IntegerField()
     edition = models.IntegerField()
-    genre_id = models.ForeignKey(Genre, related_name='books', on_delete=models.PROTECT)
+    genre = models.ForeignKey(Genre, related_name='books', on_delete=models.PROTECT)
     publication_date = models.DateTimeField(default=timezone.now)
     sample_text = models.CharField(max_length=300)
     # review_id = models.ForeignKey(review_id)
-    language_id = models.ForeignKey(Language, related_name='books', on_delete=models.PROTECT)
+    language = models.ForeignKey(Language, related_name='books', on_delete=models.PROTECT)
 
     def __str__(self):
         return '%s - %s' % (self.title, self.author)
@@ -68,11 +68,11 @@ class Magazine(models.Model):
     author = models.CharField(max_length=50)
     volume = models.IntegerField()
     edition = models.IntegerField()
-    genre_id = models.ForeignKey(Genre, related_name='magazines', on_delete=models.PROTECT)
+    genre = models.ForeignKey(Genre, related_name='magazines', on_delete=models.PROTECT)
     publication_date = models.DateTimeField(default=timezone.now)
     sample_page = models.CharField(max_length=300)
     # review_id = models.ForeignKey(review_id)
-    language_id = models.ForeignKey(Language, related_name='magazines', on_delete=models.PROTECT)
+    language = models.ForeignKey(Language, related_name='magazines', on_delete=models.PROTECT)
 
     def __str__(self):
         return '%s - %s' % (self.title, self.volume)
@@ -83,11 +83,11 @@ class DVD(models.Model):
     title = models.CharField(max_length=100)
     studio = models.CharField(max_length=50)
     volume = models.IntegerField()
-    genre_id = models.ForeignKey(Genre, related_name='dvds', on_delete=models.PROTECT)
+    genre = models.ForeignKey(Genre, related_name='dvds', on_delete=models.PROTECT)
     production_date = models.DateTimeField(default=timezone.now)
     digital = models.BooleanField
     # review_id = models.ForeignKey(review_id)
-    language_id = models.ForeignKey(Language, related_name='dvds', on_delete=models.PROTECT)
+    language = models.ForeignKey(Language, related_name='dvds', on_delete=models.PROTECT)
 
     def __str__(self):
         return '%s' % self.title
