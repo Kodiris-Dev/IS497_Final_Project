@@ -43,7 +43,7 @@ class Profile(models.Model):
     assistance = models.BooleanField()
 
     def __str__(self):
-        return '%s - %s' % (self.user.last_name, self.user.first_name)
+        return '%s' % self.user.username
 
 
 class Book(models.Model):
