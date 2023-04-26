@@ -1,3 +1,5 @@
+from django.core.exceptions import ValidationError
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 
 from django.contrib.auth.models import User
@@ -93,6 +95,39 @@ class DVD(models.Model):
         return '%s' % self.title
 
 
+class AssetType(models.Model):
+    asset_id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return '%s' % self.name
+
+
+class Review(models.Model):
+    review_id = models.AutoField(primary_key=True)
+    title = models.CharField(max_length=100)
+    text = models.CharField(max_length=500)
+    rating = models.IntegerField(default=1,
+                                 validators=[
+                                     MaxValueValidator(5),
+                                     MinValueValidator(1)
+                                 ])
+    profile = models.ForeignKey(Profile, related_name='reviews', on_delete=models.PROTECT)
+
+    book_id = models.ForeignKey(Book, related_name='reviews', on_delete=models.PROTECT, blank=True, null=True)
+    dvd_id = models.ForeignKey(DVD, related_name='reviews', on_delete=models.PROTECT, blank=True, null=True)
+    magazine_id = models.ForeignKey(Magazine, related_name='reviews', on_delete=models.PROTECT, blank=True, null=True)
+
+    asset_type = models.ForeignKey(AssetType, related_name='reviews', on_delete=models.PROTECT)
+
+    def __str__(self):
+        return '%s' % self.title
+
+    def clean(self):
+        if not (self.book_id or self.dvd_id or self.magazine_id):
+            raise ValidationError("You must specify either a book, magazine, or dvd")
+
+
 class Employee(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     employee_id = models.AutoField(primary_key=True)
@@ -110,8 +145,3 @@ class Employee(models.Model):
 
     def __str__(self):
         return '%s' % (self.user.username)
-
-
-
-
-
