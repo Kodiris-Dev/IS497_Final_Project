@@ -128,6 +128,23 @@ class Review(models.Model):
             raise ValidationError("You must specify either a book, magazine, or dvd")
 
 
+class CheckedAsset(models.Model):
+    checked_assets_id = models.AutoField(primary_key=True)
+    profile = models.ForeignKey(Profile, related_name='checkedAssets', on_delete=models.PROTECT)
+    book_id = models.ForeignKey(Book, related_name='checkedAssets', on_delete=models.PROTECT, blank=True, null=True)
+    dvd_id = models.ForeignKey(DVD, related_name='checkedAssets', on_delete=models.PROTECT, blank=True, null=True)
+    magazine_id = models.ForeignKey(Magazine, related_name='checkedAssets', on_delete=models.PROTECT, blank=True, null=True)
+
+    asset_type = models.ForeignKey(AssetType, related_name='checkedAssets', on_delete=models.PROTECT)
+
+    def __str__(self):
+        return '%s - %s' % (self.profile, self.book_id.title or self.dvd_id.title or self.magazine_id.title)
+
+    def clean(self):
+        if not (self.book_id or self.dvd_id or self.magazine_id):
+            raise ValidationError("You must specify either a book, magazine, or dvd")
+
+
 class Employee(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     employee_id = models.AutoField(primary_key=True)
